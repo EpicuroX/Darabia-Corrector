@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Corrector · Darabia Engine V5</title>
+<style>
+/* ============================================================================
+   DARABIA ENGINE V5 · CORRECTOR DOCENTE
+   corrector.html · v1.1
+   Uso interno del profesor. No accesible al alumno.
+   ============================================================================ */
+
+:root {
+  --bg-0: #0a0e1a;
+  --bg-1: #111827;
+  --bg-2: #1f2937;
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.16);
+  --text-0: #f1f5f9;
+  --text-1: #cbd5e1;
+  --text-2: #94a3b8;
+  --text-3: #64748b;
+  --green: #10d98a;
+  --red: #ff4d6a;
+  --amber: #f59e0b;
+  --blue: #60a5fa;
+  --green-bg: rgba(16,217,138,0.08);
+  --amber-bg: rgba(245,158,11,0.08);
+  --red-bg: rgba(255,77,106,0.08);
+  --blue-bg: rgba(96,165,250,0.08);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-0);
+  background-image:
+    radial-gradient(at 20% 0%, rgba(96,165,250,0.08) 0%, transparent 50%),
+    radial-gradient(at 80% 100%, rgba(16,217,138,0.06) 0%, transparent 50%);
+  color: var(--text-0);
+  min-height: 100vh;
+  padding: 32px 24px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1100px; margin: 0 auto; }
+
+/* ── HEADER ───────────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+header .subtitle {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-size: 11px; color: var(--text-3); margin-top: 4px;
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+header .badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; padding: 4px 10px;
+  border: 1px solid var(--border-strong); border-radius: 6px;
+  color: var(--text-2); background: var(--bg-2);
+}
+
+/* ── PANELES (glassmorphism) ──────────────────────────────────────── */
+.panel {
+  background: linear-gradient(180deg, rgba(31,41,55,0.6), rgba(17,24,39,0.6));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.panel-title {
+  font-size: 11px; font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-3); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+
+/* ── FORMULARIO ───────────────────────────────────────────────────── */
+.form-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 20px;
+}
+.form-grid .full { grid-column: 1 / -1; }
+
+label {
+  display: block; font-size: 12px; color: var(--text-2);
+  margin-bottom: 6px; font-weight: 500;
+}
+
+input[type="text"], input[type="file"] {
+  width: 100%;
+  background: var(--bg-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  padding: 11px 14px;
+  color: var(--text-0);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+input[type="text"]:focus, input[type="file"]:focus {
+  outline: none;
+  border-color: var(--blue);
+  background: var(--bg-2);
+}
+input[type="file"] { padding: 9px 14px; cursor: pointer; }
+input[type="file"]::file-selector-button {
+  background: var(--bg-2);
+  color: var(--text-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-right: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+}
+input[type="file"]::file-selector-button:hover { background: var(--border-strong); }
+
+button {
+  background: var(--green);
+  color: var(--bg-0);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s, transform 0.1s;
+}
+button:hover { opacity: 0.9; }
+button:active { transform: translateY(1px); }
+button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+button.secondary {
+  background: var(--bg-2);
+  color: var(--text-1);
+  border: 1px solid var(--border-strong);
+}
+
+/* ── ESTADO PROCESANDO ────────────────────────────────────────────── */
+.steps {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px; margin: 20px 0;
+}
+.step {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  position: relative;
+  transition: all 0.3s;
+}
+.step .step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--text-3); margin-bottom: 6px;
+}
+.step .step-label { font-size: 13px; color: var(--text-2); }
+.step.active { border-color: var(--blue); background: var(--blue-bg); }
+.step.active .step-label { color: var(--text-0); font-weight: 500; }
+.step.active .step-num { color: var(--blue); }
+.step.done { border-color: var(--green); }
+.step.done .step-num::after { content: " ✓"; color: var(--green); }
+.step.done .step-label { color: var(--text-1); }
+
+.spinner {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── DIAGNÓSTICO RÁPIDO ───────────────────────────────────────────── */
+.diagnostico {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  border: 1px solid;
+  font-weight: 500;
+}
+.diagnostico .icono { font-size: 22px; line-height: 1; }
+.diagnostico .texto-principal { font-size: 15px; color: var(--text-0); }
+.diagnostico .texto-secundario {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-top: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.diagnostico.adecuado     { background: var(--green-bg); border-color: rgba(16,217,138,0.4); }
+.diagnostico.limite       { background: var(--amber-bg); border-color: rgba(245,158,11,0.4); }
+.diagnostico.insuficiente { background: var(--red-bg);   border-color: rgba(255,77,106,0.4); }
+.diagnostico.knockout {
+  background: var(--red-bg);
+  border-color: var(--red);
+  border-width: 2px;
+}
+.diagnostico.knockout .texto-principal { color: var(--red); font-weight: 600; }
+
+/* ── DASHBOARD (cabecera resultado) ───────────────────────────────── */
+.dashboard {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 32px;
+  align-items: center;
+}
+.nota-global {
+  text-align: center;
+  padding-right: 32px;
+  border-right: 1px solid var(--border);
+}
+.nota-global .num {
+  font-size: 64px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.nota-global .num.high { color: var(--green); }
+.nota-global .num.mid { color: var(--amber); }
+.nota-global .num.low { color: var(--red); }
+.nota-global .max {
+  font-size: 18px;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 4px;
+}
+.nota-global .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  margin-top: 8px;
+}
+
+.alumno-info {
+  font-size: 13px;
+  color: var(--text-1);
+  margin-bottom: 12px;
+}
+.alumno-info strong { color: var(--text-0); font-weight: 600; }
+.alumno-info .sep { color: var(--text-3); margin: 0 8px; }
+
+.ejes { display: flex; flex-direction: column; gap: 6px; }
+.eje-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 60px;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+}
+.eje-row .eje-name {
+  color: var(--text-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+.eje-row .eje-bar {
+  height: 6px;
+  background: var(--bg-1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.eje-row .eje-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease-out;
+}
+.eje-row .eje-fill.high { background: var(--green); }
+.eje-row .eje-fill.mid { background: var(--amber); }
+.eje-row .eje-fill.low { background: var(--red); }
+.eje-row .eje-val {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-1);
+  text-align: right;
+}
+
+/* ── BLOQUES COPIABLES ────────────────────────────────────────────── */
+.bloque {
+  position: relative;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  border: 1px solid var(--border);
+}
+.bloque.feedback-alumno {
+  background: var(--green-bg);
+  border-color: rgba(16,217,138,0.3);
+}
+.bloque.nota-docente {
+  background: var(--amber-bg);
+  border-color: rgba(245,158,11,0.3);
+}
+.bloque-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.bloque-tag {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.bloque.feedback-alumno .bloque-tag { background: var(--green); color: var(--bg-0); }
+.bloque.nota-docente .bloque-tag { background: var(--amber); color: var(--bg-0); }
+.bloque-titulo {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-0);
+  margin-top: 8px;
+}
+
+.btn-copiar {
+  background: var(--bg-2);
+  color: var(--text-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s;
+}
+.btn-copiar:hover {
+  background: var(--border-strong);
+  color: var(--text-0);
+}
+.btn-copiar.copiado {
+  background: var(--green);
+  color: var(--bg-0);
+  border-color: var(--green);
+}
+
+.bloque-contenido {
+  font-size: 14px;
+  color: var(--text-1);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  font-family: inherit;
+}
+
+/* ── DETALLE TÉCNICO (tabla criterios) ────────────────────────────── */
+.tabla-criterios { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabla-criterios th {
+  text-align: left;
+  padding: 10px 12px;
+  background: var(--bg-1);
+  color: var(--text-3);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+.tabla-criterios th.num { text-align: right; }
+.tabla-criterios td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-1);
+  vertical-align: top;
+}
+.tabla-criterios td.num {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+}
+.tabla-criterios td.num .obtenido { color: var(--text-0); font-weight: 600; }
+.tabla-criterios td.num .max { color: var(--text-3); }
+.tabla-criterios td.observacion {
+  color: var(--text-2);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* ── ERRORES ──────────────────────────────────────────────────────── */
+.error-banner {
+  background: var(--red-bg);
+  border: 1px solid var(--red);
+  border-radius: 8px;
+  padding: 16px 20px;
+  color: var(--text-0);
+  margin-bottom: 16px;
+}
+.error-banner .error-codigo {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+.error-banner .error-mensaje { font-size: 14px; color: var(--text-1); }
+.error-banner .error-acciones { margin-top: 12px; display: flex; gap: 8px; }
+
+/* ── ACCIONES GLOBALES ────────────────────────────────────────────── */
+.acciones-pie {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── UTILIDADES ───────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr; }
+  .dashboard { grid-template-columns: 1fr; }
+  .nota-global {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding-right: 0;
+    padding-bottom: 16px;
+  }
+  .eje-row { grid-template-columns: 140px 1fr 50px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div>
+    <h1>Corrector Docente</h1>
+    <div class="subtitle">Darabia Engine V5 · Caso 05</div>
+  </div>
+  <span class="badge">USO INTERNO</span>
+</header>
+
+<!-- ═══ ESTADO 1 · FORMULARIO ═══════════════════════════════════════ -->
+<section id="estado-formulario" class="panel">
+  <div class="panel-title">Subir dictamen del alumno</div>
+  <form id="form-subir">
+    <div class="form-grid">
+      <div>
+        <label for="alumno-nombre">Nombre del alumno</label>
+        <input type="text" id="alumno-nombre" required autocomplete="off" placeholder="p.ej. Jorge García">
+      </div>
+      <div>
+        <label for="alumno-grupo">Grupo</label>
+        <input type="text" id="alumno-grupo" autocomplete="off" placeholder="p.ej. 2ºPRL">
+      </div>
+      <div class="full">
+        <label for="archivo-pdf">Dictamen (PDF, máx. 8 MB)</label>
+        <input type="file" id="archivo-pdf" accept="application/pdf,.pdf" required>
+      </div>
+    </div>
+    <button type="submit" id="btn-evaluar">Evaluar dictamen</button>
+  </form>
+</section>
+
+<!-- ═══ ESTADO 2 · PROCESANDO ═══════════════════════════════════════ -->
+<section id="estado-procesando" class="panel hidden">
+  <div class="panel-title">
+    Procesando <span class="spinner"></span>
+  </div>
+  <div class="steps">
+    <div class="step" id="step-1">
+      <div class="step-num">PASO 1</div>
+      <div class="step-label">Subiendo documento</div>
+    </div>
+    <div class="step" id="step-2">
+      <div class="step-num">PASO 2</div>
+      <div class="step-label">Procesando contenido</div>
+    </div>
+    <div class="step" id="step-3">
+      <div class="step-num">PASO 3</div>
+      <div class="step-label">Evaluando dictamen</div>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--text-3);text-align:center;margin-top:8px;">
+    El paso 3 puede tardar entre 20 y 40 segundos. No cierres esta pestaña.
+  </p>
+</section>
+
+<!-- ═══ ESTADO 3 · ERROR ════════════════════════════════════════════ -->
+<section id="estado-error" class="hidden">
+  <div class="error-banner">
+    <div class="error-codigo" id="error-codigo">ERROR</div>
+    <div class="error-mensaje" id="error-mensaje"></div>
+    <div class="error-acciones">
+      <button class="secondary" id="btn-reintentar">Reintentar</button>
+      <button class="secondary" id="btn-volver">Volver al formulario</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ESTADO 4 · RESULTADO ════════════════════════════════════════ -->
+<section id="estado-resultado" class="hidden">
+
+  <!-- Diagnóstico rápido -->
+  <div class="diagnostico" id="diagnostico-rapido">
+    <span class="icono" id="diagnostico-icono"></span>
+    <div>
+      <div class="texto-principal" id="diagnostico-texto"></div>
+      <div class="texto-secundario" id="diagnostico-detalle"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div class="panel">
+    <div class="dashboard">
+      <div class="nota-global">
+        <div class="num" id="nota-num">--</div>
+        <div class="max">/ 100</div>
+        <div class="label">Nota auto</div>
+      </div>
+      <div>
+        <div class="alumno-info" id="alumno-info"></div>
+        <div class="ejes" id="ejes-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloque 1: Feedback alumno -->
+  <div class="bloque feedback-alumno">
+    <div class="bloque-header">
+      <div>
+        <span class="bloque-tag">Para el alumno</span>
+        <div class="bloque-titulo">Feedback pedagógico</div>
+      </div>
+      <button class="btn-copiar" data-target="feedback-alumno">📋 Copiar</button>
+    </div>
+    <div class="bloque-contenido" id="contenido-feedback-alumno"></div>
+  </div>
+
+  <!-- Bloque 2: Nota docente -->
+  <div class="bloque nota-docente">
+    <div class="bloque-header">
+      <div>
+        <span class="bloque-tag">Solo profesor</span>
+        <div class="bloque-titulo">Nota docente · 40% manual</div>
+      </div>
+      <button class="btn-copiar" data-target="nota-docente">📋 Copiar</button>
+    </div>
+    <div class="bloque-contenido" id="contenido-nota-docente"></div>
+  </div>
+
+  <!-- Bloque 3: Detalle técnico -->
+  <div class="panel">
+    <div class="panel-title">Detalle por criterio</div>
+    <table class="tabla-criterios">
+      <thead>
+        <tr>
+          <th>Criterio</th>
+          <th class="num">Obtenido</th>
+          <th>Observación</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-criterios-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Acciones -->
+  <div class="acciones-pie">
+    <button id="btn-otro">Evaluar otro dictamen</button>
+  </div>
+
+</section>
+
+<footer>
+  Darabia Engine V5 · IES Virgen del Pilar · Zaragoza
+</footer>
+
+</div>
+
+<script>
+'use strict';
+
+// ============================================================================
+// CONFIGURACIÓN
+// ============================================================================
+const CONFIG = {
+  endpoint: '/api/subir-pdf',
+  caso_id: 'psicosocial_gestoria_v1',
+  version_motor: '5.0.0',
+  max_file_mb: 8,
+};
+
+// ============================================================================
+// ESTADO EN MEMORIA (para reintentos sin re-subir)
+// ============================================================================
+let estado = {
+  ultimoFormData: null,    // FormData listo para reenviar
+  ultimoAlumno: null,      // {nombre, grupo}
+  ultimoPDFName: null,     // para mostrar
+};
+
+// ============================================================================
+// HELPERS DE UI · TRANSICIÓN ENTRE ESTADOS
+// ============================================================================
+const $ = id => document.getElementById(id);
+const secciones = ['estado-formulario', 'estado-procesando', 'estado-error', 'estado-resultado'];
+
+function mostrarEstado(id) {
+  secciones.forEach(s => $(s).classList.toggle('hidden', s !== id));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function marcarPaso(num, modo) {
+  // modo: 'active' | 'done' | 'reset'
+  const step = $(`step-${num}`);
+  step.classList.remove('active', 'done');
+  if (modo === 'active') step.classList.add('active');
+  if (modo === 'done') step.classList.add('done');
+}
+
+function resetPasos() {
+  for (let i = 1; i <= 3; i++) marcarPaso(i, 'reset');
+}
+
+// ============================================================================
+// FORMULARIO · ENVÍO
+// ============================================================================
+$('form-subir').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const nombre = $('alumno-nombre').value.trim();
+  const grupo = $('alumno-grupo').value.trim() || 'sin grupo';
+  const fileInput = $('archivo-pdf');
+  const file = fileInput.files[0];
+
+  if (!nombre) return alert('Falta el nombre del alumno.');
+  if (!file) return alert('Falta el PDF.');
+  if (file.size > CONFIG.max_file_mb * 1024 * 1024) {
+    return alert(`PDF demasiado grande. Máximo ${CONFIG.max_file_mb} MB.`);
+  }
+  if (!/\.pdf$/i.test(file.name)) {
+    return alert('El archivo debe ser un PDF.');
+  }
+
+  const formData = new FormData();
+  formData.append('pdf', file);
+  formData.append('nombre', nombre);
+  formData.append('grupo', grupo);
+  formData.append('caso_id', CONFIG.caso_id);
+  formData.append('version_motor', CONFIG.version_motor);
+
+  estado.ultimoFormData = formData;
+  estado.ultimoAlumno = { nombre, grupo };
+  estado.ultimoPDFName = file.name;
+
+  await procesar();
+});
+
+// ============================================================================
+// PROCESAMIENTO · LLAMADA AL BACKEND
+// ============================================================================
+async function procesar() {
+  mostrarEstado('estado-procesando');
+  resetPasos();
+  marcarPaso(1, 'active');
+
+  try {
+    // Reconstruimos el FormData porque algunos navegadores lo "consumen"
+    // tras un fetch fallido. Más seguro recrearlo desde el input si existe.
+    let formData = estado.ultimoFormData;
+    const fileInput = $('archivo-pdf');
+    if (fileInput.files[0]) {
+      formData = new FormData();
+      formData.append('pdf', fileInput.files[0]);
+      formData.append('nombre', estado.ultimoAlumno.nombre);
+      formData.append('grupo', estado.ultimoAlumno.grupo);
+      formData.append('caso_id', CONFIG.caso_id);
+      formData.append('version_motor', CONFIG.version_motor);
+      estado.ultimoFormData = formData;
+    }
+
+    // Pasos visualmente secuenciales (la transición real ocurre en el servidor;
+    // marcamos secuencialmente para feedback visual al profesor)
+    setTimeout(() => { marcarPaso(1, 'done'); marcarPaso(2, 'active'); }, 800);
+    setTimeout(() => { marcarPaso(2, 'done'); marcarPaso(3, 'active'); }, 2500);
+
+    const resp = await fetch(CONFIG.endpoint, {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok || data.error) {
+      throw {
+        codigo: data.codigo || `HTTP_${resp.status}`,
+        mensaje: data.mensaje || 'Error desconocido del servidor.',
+      };
+    }
+
+    marcarPaso(3, 'done');
+
+    // Pequeña pausa para que el último paso se vea marcado antes de saltar
+    setTimeout(() => renderResultado(data), 400);
+
+  } catch (err) {
+    mostrarError(err);
+  }
+}
+
+// ============================================================================
+// DIAGNÓSTICO RÁPIDO
+// ============================================================================
+function renderDiagnostico(nota, knockouts) {
+  const el = $('diagnostico-rapido');
+  const icono = $('diagnostico-icono');
+  const texto = $('diagnostico-texto');
+  const detalle = $('diagnostico-detalle');
+
+  el.classList.remove('adecuado', 'limite', 'insuficiente', 'knockout');
+
+  const koSuma = knockouts.reduce((s, k) => s + Math.abs(k.penalizacion || 0), 0);
+  const tieneKnockout = koSuma > 0;
+
+  if (tieneKnockout) {
+    el.classList.add('knockout');
+    icono.textContent = '⚠️';
+    const motivos = knockouts
+      .filter(k => k.penalizacion)
+      .map(k => `${formatearKnockout(k.id)} −${Math.abs(k.penalizacion)}`)
+      .join(' · ');
+    texto.textContent = `Penalización crítica aplicada (−${koSuma} pts)`;
+    detalle.textContent = motivos;
+    return;
+  }
+
+  if (nota >= 75) {
+    el.classList.add('adecuado');
+    icono.textContent = '✔️';
+    texto.textContent = 'Adecuado';
+    detalle.textContent = `${nota}/100`;
+  } else if (nota >= 50) {
+    el.classList.add('limite');
+    icono.textContent = '⚠️';
+    texto.textContent = 'Límite';
+    detalle.textContent = `${nota}/100`;
+  } else {
+    el.classList.add('insuficiente');
+    icono.textContent = '❌';
+    texto.textContent = 'Insuficiente';
+    detalle.textContent = `${nota}/100`;
+  }
+}
+
+// ============================================================================
+// RENDER DEL RESULTADO
+// ============================================================================
+function renderResultado(data) {
+  const { nombre, grupo } = estado.ultimoAlumno;
+  const fecha = new Date().toISOString().slice(0, 10);
+
+  // — Nota global —
+  const nota = Math.round(data.nota_global);
+  const notaEl = $('nota-num');
+  notaEl.textContent = nota;
+  notaEl.classList.remove('high', 'mid', 'low');
+  if (nota >= 75) notaEl.classList.add('high');
+  else if (nota >= 50) notaEl.classList.add('mid');
+  else notaEl.classList.add('low');
+
+  // — Diagnóstico rápido (incluye knockouts si los hay) —
+  const knockouts = (data.knockouts_aplicados || []).filter(k => k.penalizacion);
+  renderDiagnostico(nota, knockouts);
+
+  // — Info alumno —
+  $('alumno-info').innerHTML = `
+    <strong>${escapeHTML(nombre)}</strong>
+    <span class="sep">·</span>
+    Grupo: ${escapeHTML(grupo)}
+    <span class="sep">·</span>
+    Fecha: ${fecha}
+    <span class="sep">·</span>
+    PDF: ${escapeHTML(estado.ultimoPDFName)}
+  `;
+
+  // — Vector ejes (mini-gráfico de barras) —
+  const ejesContainer = $('ejes-container');
+  ejesContainer.innerHTML = '';
+  (data.vector_ejes || []).forEach(eje => {
+    const pct = eje.max > 0 ? (eje.puntuacion / eje.max) * 100 : 0;
+    const cls = pct >= 75 ? 'high' : pct >= 50 ? 'mid' : 'low';
+    const row = document.createElement('div');
+    row.className = 'eje-row';
+    row.innerHTML = `
+      <div class="eje-name">${formatearEje(eje.eje)}</div>
+      <div class="eje-bar"><div class="eje-fill ${cls}" style="width:${pct}%"></div></div>
+      <div class="eje-val">${eje.puntuacion}/${eje.max}</div>
+    `;
+    ejesContainer.appendChild(row);
+  });
+
+  // — Bloque 1: Feedback alumno —
+  const feedbackTexto = construirFeedbackAlumno(data);
+  $('contenido-feedback-alumno').textContent = feedbackTexto;
+
+  // — Bloque 2: Nota docente —
+  const notaDocenteTexto = construirNotaDocente(data, nombre, grupo, fecha, knockouts);
+  $('contenido-nota-docente').textContent = notaDocenteTexto;
+
+  // — Tabla criterios —
+  renderTablaCriterios(data.detalle_criterios || {});
+
+  mostrarEstado('estado-resultado');
+}
+
+// ============================================================================
+// CONSTRUCCIÓN DE TEXTOS COPIABLES
+// ============================================================================
+function construirFeedbackAlumno(data) {
+  const partes = [];
+
+  if (data.perfil_tecnico) {
+    partes.push(`Perfil técnico: ${data.perfil_tecnico}`);
+  }
+  if (data.error_critico) {
+    partes.push(`\nError principal: ${data.error_critico}`);
+  }
+  const errores = data.errores_clave || [];
+  if (errores.length > 0) {
+    partes.push('\nOtros puntos a revisar:');
+    errores.forEach(err => partes.push(`— ${err}`));
+  }
+
+  return partes.join('\n');
+}
+
+function construirNotaDocente(data, nombre, grupo, fecha, knockouts) {
+  const nota = Math.round(data.nota_global);
+  const koSuma = knockouts.reduce((s, k) => s + Math.abs(k.penalizacion || 0), 0);
+  const koTexto = koSuma > 0 ? ` · Knockout: −${koSuma}` : '';
+
+  const cabecera =
+    `Alumno: ${nombre} · Grupo: ${grupo} · Fecha: ${fecha} · Nota auto: ${nota}/100${koTexto}\n` +
+    `───`;
+
+  const cuerpo = data.nota_asesoramiento_docente || data.nota_docente || '(sin nota docente disponible)';
+
+  return `${cabecera}\n${cuerpo}`;
+}
+
+// ============================================================================
+// TABLA DE CRITERIOS
+// ============================================================================
+function renderTablaCriterios(detalle) {
+  const tbody = $('tabla-criterios-body');
+  tbody.innerHTML = '';
+  Object.entries(detalle).forEach(([id, info]) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${formatearCriterio(id)}</strong></td>
+      <td class="num"><span class="obtenido">${info.puntuacion}</span><span class="max">/${info.max}</span></td>
+      <td class="observacion">${escapeHTML(info.observacion || '—')}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ============================================================================
+// FORMATEADORES (id técnico → label legible)
+// ============================================================================
+const LABELS_CRITERIOS = {
+  unidades_analisis: 'Unidades de análisis',
+  triangulacion: 'Triangulación',
+  modelos_teoricos: 'Modelos teóricos',
+  hipotesis: 'Hipótesis',
+  plan_accion: 'Plan de acción',
+  argumentacion: 'Argumentación',
+  factores_riesgo: 'Factores de riesgo',
+};
+const LABELS_EJES = {
+  capacidad_analisis: 'Capacidad de análisis',
+  uso_marcos_teoricos: 'Uso de marcos teóricos',
+  criterio_intervencion: 'Criterio de intervención',
+  deteccion_riesgos_criticos: 'Detección de riesgos',
+  argumentacion_profesional: 'Argumentación profesional',
+};
+const LABELS_KNOCKOUTS = {
+  senyal_sonia: 'Knockout Sonia',
+  medidas_terciarias_unicas: 'Medidas terciarias',
+};
+
+function formatearCriterio(id) { return LABELS_CRITERIOS[id] || id; }
+function formatearEje(id) { return LABELS_EJES[id] || id; }
+function formatearKnockout(id) { return LABELS_KNOCKOUTS[id] || id; }
+
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = String(str ?? '');
+  return div.innerHTML;
+}
+
+// ============================================================================
+// BOTONES COPIAR
+// ============================================================================
+document.querySelectorAll('.btn-copiar').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const target = btn.dataset.target;
+    const contenido = $(`contenido-${target}`).textContent;
+
+    try {
+      await navigator.clipboard.writeText(contenido);
+      const original = btn.textContent;
+      btn.textContent = '✓ Copiado';
+      btn.classList.add('copiado');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('copiado');
+      }, 1800);
+    } catch (err) {
+      alert('No se pudo copiar al portapapeles. Selecciona el texto manualmente.');
+    }
+  });
+});
+
+// ============================================================================
+// MANEJO DE ERRORES VISIBLES
+// ============================================================================
+function mostrarError(err) {
+  const codigo = err.codigo || 'ERROR';
+  const mensaje = err.mensaje || 'Error inesperado.';
+
+  $('error-codigo').textContent = codigo;
+  $('error-mensaje').textContent = mensajeAmigable(codigo, mensaje);
+
+  // Reintentar visible solo si tiene sentido
+  const reintentable = ['LIMITE_CUOTA', 'API_SOBRECARGADA', 'TIMEOUT_API', 'RED_ERROR']
+    .includes(codigo) || codigo.startsWith('HTTP_5');
+  $('btn-reintentar').classList.toggle('hidden', !reintentable);
+
+  mostrarEstado('estado-error');
+}
+
+function mensajeAmigable(codigo, mensajeOrig) {
+  const mapa = {
+    'SIN_SALDO': 'La cuenta de Anthropic no tiene saldo. Avisa al admin antes de seguir corrigiendo.',
+    'API_KEY_INVALIDA': 'La API key de Anthropic es inválida o ha expirado. Revisa las variables de entorno de Vercel.',
+    'LIMITE_CUOTA': 'Anthropic está limitando peticiones. Espera unos minutos y reintenta.',
+    'API_SOBRECARGADA': 'La API de Anthropic está saturada ahora mismo. Reintenta en un minuto.',
+    'TIMEOUT_API': 'La evaluación tardó más de 60 segundos. Reintenta — puede ser un pico puntual.',
+    'PDF_VACIO': 'No se ha podido extraer texto del PDF. ¿Es un PDF escaneado o de imágenes?',
+    'PDF_INVALIDO': 'El archivo no parece un PDF válido.',
+    'DICTAMEN_INSUFICIENTE': 'El texto extraído del PDF es demasiado corto. Revisa que el alumno haya entregado el dictamen completo.',
+    'CASO_NO_ENCONTRADO': 'El caso configurado no está registrado en el backend.',
+    'JSON_INVALIDO': 'La IA devolvió una respuesta mal formada. Reintenta — suele ser un fallo puntual.',
+    'RED_ERROR': 'Error de red contra el servidor. Revisa tu conexión y reintenta.',
+  };
+  return mapa[codigo] || mensajeOrig;
+}
+
+$('btn-reintentar').addEventListener('click', () => procesar());
+$('btn-volver').addEventListener('click', () => mostrarEstado('estado-formulario'));
+
+// ============================================================================
+// ACCIONES DE PIE
+// ============================================================================
+$('btn-otro').addEventListener('click', () => {
+  $('form-subir').reset();
+  estado = { ultimoFormData: null, ultimoAlumno: null, ultimoPDFName: null };
+  mostrarEstado('estado-formulario');
+});
+
+</script>
+</body>
+</html>
