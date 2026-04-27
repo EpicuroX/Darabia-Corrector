@@ -304,10 +304,6 @@ button.secondary {
   margin-bottom: 16px;
   border: 1px solid var(--border);
 }
-.bloque.feedback-alumno {
-  background: var(--green-bg);
-  border-color: rgba(16,217,138,0.3);
-}
 .bloque.nota-docente {
   background: var(--amber-bg);
   border-color: rgba(245,158,11,0.3);
@@ -327,7 +323,6 @@ button.secondary {
   border-radius: 4px;
   font-weight: 600;
 }
-.bloque.feedback-alumno .bloque-tag { background: var(--green); color: var(--bg-0); }
 .bloque.nota-docente .bloque-tag { background: var(--amber); color: var(--bg-0); }
 .bloque-titulo {
   font-size: 16px;
@@ -555,24 +550,12 @@ footer {
     </div>
   </div>
 
-  <!-- Bloque 1: Feedback alumno -->
-  <div class="bloque feedback-alumno">
-    <div class="bloque-header">
-      <div>
-        <span class="bloque-tag">Para el alumno</span>
-        <div class="bloque-titulo">Feedback pedagógico</div>
-      </div>
-      <button class="btn-copiar" data-target="feedback-alumno">📋 Copiar</button>
-    </div>
-    <div class="bloque-contenido" id="contenido-feedback-alumno"></div>
-  </div>
-
-  <!-- Bloque 2: Nota docente -->
+  <!-- Bloque único: Análisis del dictamen -->
   <div class="bloque nota-docente">
     <div class="bloque-header">
       <div>
         <span class="bloque-tag">Solo profesor</span>
-        <div class="bloque-titulo">Nota docente · 40% manual</div>
+        <div class="bloque-titulo">Análisis del dictamen · margen docente 40%</div>
       </div>
       <button class="btn-copiar" data-target="nota-docente">📋 Copiar</button>
     </div>
@@ -596,7 +579,6 @@ footer {
 
   <!-- Acciones -->
   <div class="acciones-pie">
-    <button class="secondary" id="btn-debug">🔍 Ver datos técnicos</button>
     <button id="btn-otro">Evaluar otro dictamen</button>
   </div>
 
@@ -628,7 +610,6 @@ let estado = {
   ultimoFormData: null,    // FormData listo para reenviar
   ultimoAlumno: null,      // {nombre, grupo}
   ultimoPDFName: null,     // para mostrar
-  ultimaRespuesta: null,   // JSON crudo (debug temporal)
 };
 
 // ============================================================================
@@ -731,7 +712,6 @@ async function procesar() {
     }
 
     marcarPaso(3, 'done');
-    estado.ultimaRespuesta = data; // debug temporal
 
     // Pequeña pausa para que el último paso se vea marcado antes de saltar
     setTimeout(() => renderResultado(data), 400);
@@ -832,11 +812,7 @@ function renderResultado(data) {
     ejesContainer.appendChild(row);
   });
 
-  // — Bloque 1: Feedback alumno —
-  const feedbackTexto = construirFeedbackAlumno(data);
-  $('contenido-feedback-alumno').textContent = feedbackTexto;
-
-  // — Bloque 2: Nota docente —
+  // — Bloque único: Análisis del dictamen —
   const notaDocenteTexto = construirNotaDocente(data, nombre, grupo, fecha, knockouts);
   $('contenido-nota-docente').textContent = notaDocenteTexto;
 
@@ -849,24 +825,6 @@ function renderResultado(data) {
 // ============================================================================
 // CONSTRUCCIÓN DE TEXTOS COPIABLES
 // ============================================================================
-function construirFeedbackAlumno(data) {
-  const partes = [];
-
-  if (data.perfil_tecnico) {
-    partes.push(`Perfil técnico: ${data.perfil_tecnico}`);
-  }
-  if (data.error_critico) {
-    partes.push(`\nError principal: ${data.error_critico}`);
-  }
-  const errores = data.errores_clave || [];
-  if (errores.length > 0) {
-    partes.push('\nOtros puntos a revisar:');
-    errores.forEach(err => partes.push(`— ${err}`));
-  }
-
-  return partes.join('\n');
-}
-
 function construirNotaDocente(data, nombre, grupo, fecha, knockouts) {
   const nota = Math.round(data.nota_global);
   const koSuma = knockouts.reduce((s, k) => s + Math.abs(k.penalizacion || 0), 0);
@@ -998,27 +956,8 @@ $('btn-volver').addEventListener('click', () => mostrarEstado('estado-formulario
 // ============================================================================
 $('btn-otro').addEventListener('click', () => {
   $('form-subir').reset();
-  estado = { ultimoFormData: null, ultimoAlumno: null, ultimoPDFName: null, ultimaRespuesta: null };
+  estado = { ultimoFormData: null, ultimoAlumno: null, ultimoPDFName: null };
   mostrarEstado('estado-formulario');
-});
-
-// ============================================================================
-// BOTÓN DEBUG TEMPORAL — quitar cuando se cierre el diagnóstico
-// ============================================================================
-$('btn-debug').addEventListener('click', async () => {
-  if (!estado.ultimaRespuesta) {
-    alert('No hay respuesta disponible.');
-    return;
-  }
-  const json = JSON.stringify(estado.ultimaRespuesta, null, 2);
-  try {
-    await navigator.clipboard.writeText(json);
-    alert('JSON copiado al portapapeles.\n\nPégalo en el chat (Ctrl+V).\n\nTambién se va a abrir un cuadro con el JSON por si la copia ha fallado.');
-  } catch (err) {
-    // Fallback silencioso
-  }
-  // Mostrar también el JSON en un prompt para que se pueda copiar manualmente
-  window.prompt('JSON de la respuesta (Ctrl+A → Ctrl+C):', json);
 });
 
 </script>
