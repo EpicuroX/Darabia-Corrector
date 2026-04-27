@@ -1,0 +1,264 @@
+{
+  "caso": {
+    "id": "psicosocial_gestoria_v1",
+    "titulo": "Caso 05 - Gestoria Moreno & Asociados",
+    "sector": "Servicios profesionales - Gestoria fiscal",
+    "modelos_teoricos": ["Karasek-DCA", "Siegrist-ERI"],
+    "instrumento": "ISTAS21 version corta",
+    "prompt_template": "prompt_evaluacion_psico.txt",
+    "puntuacion_maxima_automatica": 60,
+    "puntuacion_profesor": 40,
+    "ra_evaluados": ["RA3", "RA4", "RA5_parcial"]
+  },
+  "contexto": {
+    "empresa": "Gestoria Moreno & Asociados S.L.",
+    "sector": "Servicios profesionales - CNAE 6920",
+    "direccion": "C/ Reconquista 14, Actur, Zaragoza",
+    "plantilla": 8,
+    "datos_objetivos": {
+      "absentismo": "21.3%",
+      "referencia_sector": "9.8%",
+      "bajas_psicologicas_12m": 2,
+      "dias_baja_total": 35,
+      "horas_extra_media_marzo": "11.4h/trabajador",
+      "ultima_evaluacion_psicosocial": 2019
+    }
+  },
+  "npcs": [
+    {
+      "id": "npc_ana",
+      "nombre": "Ana Gimenez",
+      "edad": 38,
+      "rol": "Tecnica fiscal senior - 11 anos en empresa",
+      "disponible": true,
+      "evidencias_desbloqueables": [
+        {
+          "id": "llave_ana_carga",
+          "pregunta_dardo": "Hay alguien mas que pueda resolver lo que te derivan a ti?",
+          "evidencia": "No hay protocolo de delegacion. Si Ana falta, la gestoria se para.",
+          "dimension_karasek": "alta_demanda",
+          "dimension_siegrist": "alto_esfuerzo_baja_recompensa"
+        },
+        {
+          "id": "llave_ana_doble_presencia",
+          "pregunta_dardo": "Como gestionas las urgencias del trabajo cuando tienes obligaciones familiares?",
+          "evidencia": "Madre con movilidad reducida sola martes y jueves. Lleva 3 meses sin poder estar con ella a las 15h.",
+          "dimension_istas": "doble_presencia"
+        }
+      ]
+    },
+    {
+      "id": "npc_miguel",
+      "nombre": "Miguel Santamaria",
+      "edad": 29,
+      "rol": "Auxiliar administrativo - 14 meses - contrato temporal",
+      "disponible": true,
+      "evidencias_desbloqueables": [
+        {
+          "id": "llave_miguel_rol",
+          "pregunta_dardo": "Te han explicado alguna vez por escrito que incluye tu puesto?",
+          "evidencia": "Nunca ha existido descripcion de puesto. Clausula 3a contrato: funciones ilimitadas definidas por direccion.",
+          "dimension_karasek": "bajo_control",
+          "dimension_istas": "ambiguedad_rol"
+        }
+      ]
+    },
+    {
+      "id": "npc_sonia",
+      "nombre": "Sonia Peralta",
+      "edad": 45,
+      "rol": "Contable senior - 17 anos - no participa en ISTAS21",
+      "disponible": true,
+      "nota_tecnica": "Su silencio y declaracion final son evidencia. No diagnosticar acoso sin protocolo.",
+      "evidencias_desbloqueables": [
+        {
+          "id": "llave_sonia_hostilidad",
+          "pregunta_dardo": "Como describirias tu relacion actual con Rafael?",
+          "evidencia": "Rafael ya ni me saluda. Pullas delante de clientes. Eso tiene un nombre y no es estres.",
+          "requiere_protocolo_investigacion": true
+        }
+      ]
+    },
+    {
+      "id": "npc_rafael",
+      "nombre": "Rafael Moreno",
+      "edad": 61,
+      "rol": "Gerente - socio unico - interlocutor principal",
+      "disponible": true,
+      "objeciones": [
+        {
+          "id": "obj_normalidad",
+          "texto": "Esto es lo normal en abril. Siempre ha sido asi.",
+          "argumento_legal": "LPRL Art.15 - adaptar trabajo a la persona. Art.16 - plan prevencion actualizado.",
+          "argumento_economico": "35 dias baja psicologica en 12 meses. Absentismo 21.3% vs 9.8% sector."
+        },
+        {
+          "id": "obj_ana_voluntaria",
+          "texto": "Si Ana se lleva trabajo a casa es porque ella quiere.",
+          "argumento_legal": "LPRL Art.4.7 - condicion de trabajo incluye organizacion.",
+          "argumento_economico": "Horas extra no compensadas: pasivo laboral real si la trabajadora reclama."
+        }
+      ]
+    }
+  ],
+  "aciertos_criticos": {
+    "triangulacion": {
+      "fuentes_validas": [
+        "item_1_istas21",
+        "item_3_istas21",
+        "item_7_istas21",
+        "item_12_istas21",
+        "item_15_istas21",
+        "item_21_istas21",
+        "item_22_istas21",
+        "fichaje_ana_semana_13_19_abril",
+        "email_bandeja_ana_09h47",
+        "contrato_miguel_clausula_3",
+        "baja_IT_2025_AR_08841",
+        "baja_IT_2026_AR_01247",
+        "transcripcion_ana_08abril",
+        "transcripcion_miguel_09abril",
+        "transcripcion_sonia_10abril",
+        "anotacion_rafael_fichaje"
+      ],
+      "minimo_requerido": 3,
+      "penalizacion_fuente_generica": 2
+    },
+    "factores_riesgo": {
+      "sobrecarga_cuantitativa": {
+        "evidencias_clave": ["item_1_istas21_6de7", "fichaje_ana_12h_diarias", "horas_extra_11h_media"],
+        "modelo": "Karasek_alta_demanda",
+        "puntos": 5
+      },
+      "bajo_control": {
+        "evidencias_clave": ["item_7_istas21_4de7_nunca", "clausula_3_contrato_miguel"],
+        "modelo": "Karasek_bajo_control",
+        "puntos": 4
+      },
+      "ambiguedad_rol": {
+        "evidencias_clave": ["item_12_istas21_distribucion", "clausula_3_contrato", "transcripcion_miguel_ITV"],
+        "modelo": "Karasek_bajo_control",
+        "puntos": 4
+      },
+      "ausencia_apoyo_superior": {
+        "evidencias_clave": ["item_15_istas21_7de7_NUNCA", "transcripcion_sonia_ni_saluda", "anotacion_rafael_falta_compromiso"],
+        "modelo": "Karasek_bajo_apoyo_social",
+        "puntos": 5
+      },
+      "doble_presencia": {
+        "evidencias_clave": ["item_21_istas21_5de7", "item_22_istas21_4de7", "transcripcion_ana_madre_sola"],
+        "modelo": "ISTAS21_doble_presencia",
+        "puntos": 4
+      },
+      "desequilibrio_esfuerzo_recompensa": {
+        "evidencias_clave": ["fichaje_ana_portatil_finde", "transcripcion_ana_siempre_yo"],
+        "modelo": "Siegrist_ERI",
+        "puntos": 4,
+        "bonus": "+2 pts si identifica Siegrist especificamente en Ana"
+      }
+    },
+    "ejes_evaluacion": [
+      "capacidad_analisis",
+      "uso_marcos_teoricos",
+      "criterio_intervencion",
+      "deteccion_riesgos_criticos",
+      "argumentacion_profesional"
+    ],
+    "rubrica_evaluacion": {
+      "total_sumando": 100,
+      "criterios": [
+        {
+          "id": "unidades_analisis",
+          "nombre": "Unidades de Analisis",
+          "peso": 10,
+          "descripcion": "Identificacion diferenciada de departamentos, puestos y colectivos con exposicion distinta."
+        },
+        {
+          "id": "triangulacion",
+          "nombre": "Triangulacion de Evidencias",
+          "peso": 15,
+          "descripcion": "Cruce de ISTAS21, entrevistas y registros documentales. Minimo 3 fuentes convergentes por factor de riesgo."
+        },
+        {
+          "id": "modelos_teoricos",
+          "nombre": "Modelos Teoricos",
+          "peso": 20,
+          "descripcion": "Aplicacion estricta y operativa de Karasek (DCA) y Siegrist (ERI) a los datos del caso, no definicion memoristica."
+        },
+        {
+          "id": "hipotesis",
+          "nombre": "Formulacion de Hipotesis",
+          "peso": 20,
+          "descripcion": "Identificacion del mecanismo causal estructural. Hipotesis organizacional, no individual."
+        },
+        {
+          "id": "plan_accion",
+          "nombre": "Plan de Accion",
+          "peso": 20,
+          "descripcion": "Jerarquia preventiva (primarias > secundarias/terciarias) + Rigor Operativo (KPI + Plazo + Responsable obligatorios por medida).",
+          "componentes": ["jerarquia_preventiva", "rigor_operativo"]
+        },
+        {
+          "id": "argumentacion",
+          "nombre": "Argumentacion legal y economica",
+          "peso": 15,
+          "descripcion": "Citacion concreta LPRL (Art. 15, 16, 4.7) + cuantificacion economica con datos del expediente."
+        }
+      ]
+    },
+    "mapeo_ejes_criterios": {
+      "capacidad_analisis": ["unidades_analisis", "triangulacion"],
+      "uso_marcos_teoricos": ["modelos_teoricos"],
+      "deteccion_riesgos_criticos": ["hipotesis"],
+      "criterio_intervencion": ["plan_accion"],
+      "argumentacion_profesional": ["argumentacion"]
+    },
+    "knockout_criteria": {
+      "senyal_sonia": {
+        "obligatorio": true,
+        "descripcion": "La Senal Sonia es un indicio de posible conducta hostil que exige apertura de protocolo de investigacion conforme al RD 901/2020 y Art. 48 LO 3/2007. No es diagnosticable desde un dictamen psicosocial ordinario.",
+        "respuesta_minima": "apertura_protocolo_investigacion",
+        "penalizacion_si_ignorada": 15,
+        "penalizacion_diagnostico_sin_protocolo": 10,
+        "tipo": "knockout_transversal",
+        "nota_tecnica": "No suma puntos si se detecta correctamente (es obligacion profesional, no merito). Solo resta sobre la nota automatica total si se falla."
+      }
+    }
+  },
+  "jerarquia_preventiva": {
+    "medidas_primarias_esperadas": [
+      "contratacion_refuerzo_campana",
+      "redistribucion_carga_planificacion",
+      "descripcion_puesto_miguel",
+      "protocolo_supervision_1a1",
+      "flexibilidad_horaria_teletrabajo",
+      "protocolo_investigacion_sonia"
+    ],
+    "medidas_penalizadas": [
+      "taller_gestion_estres",
+      "sesiones_mindfulness",
+      "derivacion_psicologo_individual",
+      "yoga"
+    ],
+    "penalizacion_medida_terciaria_como_unica": 5
+  },
+  "indicadores_validos": {
+    "formato_requerido": "numero + unidad + plazo + responsable",
+    "regla_rigor_operativo": "Cada medida requiere los tres elementos (KPI, Plazo, Responsable). Si una medida omite cualquiera de los tres, esa medida cuenta 0 en el componente Rigor Operativo del criterio Plan de Accion. No hay puntuacion parcial por medida.",
+    "ejemplos_validos": [
+      "reduccion absentismo 21.3% a 10% en 12 meses - responsable: Rafael Moreno",
+      "horas extra menor o igual 3h por trabajador mes - responsable: RRHH",
+      "item 15 ISTAS mejora de Nunca a Algunas veces en 5 de 7 trabajadores - responsable: Servicio Prevencion"
+    ],
+    "ejemplos_invalidos": [
+      "mejorar el absentismo",
+      "reducir el estres",
+      "mejorar el clima laboral"
+    ]
+  },
+  "prompt_evaluacion": {
+    "archivo": "prompt_evaluacion_psico.txt",
+    "version": "2.0",
+    "calibrado_con": "resolucion_modelo_caso05_v1.docx"
+  }
+}
