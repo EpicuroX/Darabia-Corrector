@@ -596,6 +596,7 @@ footer {
 
   <!-- Acciones -->
   <div class="acciones-pie">
+    <button class="secondary" id="btn-debug">🔍 Ver datos técnicos</button>
     <button id="btn-otro">Evaluar otro dictamen</button>
   </div>
 
@@ -627,6 +628,7 @@ let estado = {
   ultimoFormData: null,    // FormData listo para reenviar
   ultimoAlumno: null,      // {nombre, grupo}
   ultimoPDFName: null,     // para mostrar
+  ultimaRespuesta: null,   // JSON crudo (debug temporal)
 };
 
 // ============================================================================
@@ -729,6 +731,7 @@ async function procesar() {
     }
 
     marcarPaso(3, 'done');
+    estado.ultimaRespuesta = data; // debug temporal
 
     // Pequeña pausa para que el último paso se vea marcado antes de saltar
     setTimeout(() => renderResultado(data), 400);
@@ -995,8 +998,27 @@ $('btn-volver').addEventListener('click', () => mostrarEstado('estado-formulario
 // ============================================================================
 $('btn-otro').addEventListener('click', () => {
   $('form-subir').reset();
-  estado = { ultimoFormData: null, ultimoAlumno: null, ultimoPDFName: null };
+  estado = { ultimoFormData: null, ultimoAlumno: null, ultimoPDFName: null, ultimaRespuesta: null };
   mostrarEstado('estado-formulario');
+});
+
+// ============================================================================
+// BOTÓN DEBUG TEMPORAL — quitar cuando se cierre el diagnóstico
+// ============================================================================
+$('btn-debug').addEventListener('click', async () => {
+  if (!estado.ultimaRespuesta) {
+    alert('No hay respuesta disponible.');
+    return;
+  }
+  const json = JSON.stringify(estado.ultimaRespuesta, null, 2);
+  try {
+    await navigator.clipboard.writeText(json);
+    alert('JSON copiado al portapapeles.\n\nPégalo en el chat (Ctrl+V).\n\nTambién se va a abrir un cuadro con el JSON por si la copia ha fallado.');
+  } catch (err) {
+    // Fallback silencioso
+  }
+  // Mostrar también el JSON en un prompt para que se pueda copiar manualmente
+  window.prompt('JSON de la respuesta (Ctrl+A → Ctrl+C):', json);
 });
 
 </script>
