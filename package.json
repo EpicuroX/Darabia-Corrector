@@ -1,4 +1,13 @@
 {
+  "name": "darabia-engine-v5",
+  "version": "5.0.0",
+  "description": "Corrector docente de dictámenes psicosociales — Caso 05 Gestoría Moreno (IES Virgen del Pilar, Zaragoza)",
+  "private": true,
+  "author": "Jonás Agudo Osuna (Honás Darabia)",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "busboy": "^1.6.0",
     "pdf-parse": "^1.1.1"
